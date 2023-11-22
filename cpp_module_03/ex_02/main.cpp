@@ -1,9 +1,8 @@
-#include "ClapTrap.hpp"
+#include "FragTrap.hpp"
 
-int main(void)
-{
-	ClapTrap a("A");
-	ClapTrap b("B");
+int main(){
+	FragTrap a("A");
+	FragTrap b("B");
 
 	a.attack("B");
 	b.takeDamage(3);
@@ -12,5 +11,8 @@ int main(void)
 	b.attack("A");
 	a.takeDamage(10);
 	a.beRepaired(10);
+
+	a.highFivesGuys();
+	b.highFivesGuys();
 	return (0);
 }

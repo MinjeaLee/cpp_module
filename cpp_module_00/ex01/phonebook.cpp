@@ -1,4 +1,4 @@
-#include "phonebook.hpp"
+#include "PhoneBook.hpp"
 
 void PhoneBook::initContact()
 {
@@ -13,75 +13,71 @@ void PhoneBook::clearContact()
 {
 	for (int i = 0; i < 8; i++)
 	{
-		contacts[i].index = 0;
-		contacts[i].first_name.clear();
-		contacts[i].last_name.clear();
-		contacts[i].nickname.clear();
-		contacts[i].phonenumber.clear();
-		contacts[i].darkest_secret.clear();
+		contacts[i].setIndex(0);
+		contacts[i].setFirstName("");
+		contacts[i].setLastName("");
+		contacts[i].setNickname("");
+		contacts[i].setPhoneNumber("");
+		contacts[i].setDarkestSecret("");
 	}
 }
 
 int PhoneBook::addContact()
 {
-	this->contacts[index % 8].index = index;
+	std::string input;
+	this->contacts[index % 8].setIndex(index);
 	first_name:
 	std::cout << "Enter first name : ";
-	if (!std::getline(std::cin, contacts[index % 8].first_name))
+	if (!std::getline(std::cin, input))
 		return 0;
-	if (contacts[index % 8].first_name.empty())
+	if (input.empty())
 	{
 		std::cout << "Invalid input." << std::endl;
 		goto first_name;
 	}
+	this->contacts[index % 8].setFirstName(input);
 	last_name:
 	std::cout << "Enter last name : ";
-	if (!std::getline(std::cin, contacts[index % 8].last_name))
+	if (!std::getline(std::cin, input))
 		return 0;
-	if (contacts[index % 8].last_name.empty())
+	if (input.empty())
 	{
 		std::cout << "Invalid input." << std::endl;
 		goto last_name;
 	}
+	this->contacts[index % 8].setLastName(input);
 	nickname:
 	std::cout << "Enter nickname : ";
-	if (!std::getline(std::cin, contacts[index % 8].nickname))
+	if (!std::getline(std::cin, input))
 		return 0;
-	if (contacts[index % 8].nickname.empty())
+	if (input.empty())
 	{
 		std::cout << "Invalid input." << std::endl;
 		goto nickname;
 	}
+	this->contacts[index % 8].setNickname(input);
 	phonenumber:
 	std::cout << "Enter phone number : ";
-	if (!std::getline(std::cin, contacts[index % 8].phonenumber))
+	if (!std::getline(std::cin, input))
 		return 0;
-	if (contacts[index % 8].phonenumber.empty())
+	if (input.empty())
 	{
 		std::cout << "Invalid input." << std::endl;
 		goto phonenumber;
 	}
+	this->contacts[index % 8].setPhoneNumber(input);
 	darkest_secret:
 	std::cout << "Enter darkest secret :";
-	if (!std::getline(std::cin, contacts[index % 8].darkest_secret))
+	if (!std::getline(std::cin, input))
 		return 0;
-	if (contacts[index % 8].darkest_secret.empty())
+	if (input.empty())
 	{
 		std::cout << "Invalid input." << std::endl;
 		goto darkest_secret;
 	}
-
-	// print this contact
-	std::cout << "first name : " << contacts[index % 8].first_name << std::endl;
-	std::cout << "last name : " << contacts[index % 8].last_name << std::endl;
-	std::cout << "nickname : " << contacts[index % 8].nickname << std::endl;
-	std::cout << "phone number : " << contacts[index % 8].phonenumber << std::endl;
-	std::cout << "darkest secret : " << contacts[index % 8].darkest_secret << std::endl;
-
+	this->contacts[index % 8].setDarkestSecret(input);
 
 	index++;
-
-	std::cout << strlen(contacts[0].first_name.c_str()) << std::endl;
 	return 1;
 }
 
@@ -92,18 +88,19 @@ void PhoneBook::printIndexRange()
 	{
 		std::cout << "0): ";
 	}
-	else if (this->index < 8)
+	else if (index < 8)
 	{
-		std::cout << "0-" << this->index - 1 << "): ";
+		std::cout << "0-" << index - 1 << "): ";
 	}
 	else
 	{
-		std::cout << this->index - 8 << "-"<< this->index - 1 << "): ";
+		std::cout << "0-7): ";
 	}
 }
 
 int PhoneBook::searchContact()
 {
+	std::string input;
 	int input_index;
 
 	if (this->index == 0)
@@ -112,22 +109,33 @@ int PhoneBook::searchContact()
 		return 1;
 	}
 	printAllContacts();
-
+SERACH:
 	printIndexRange();
-	std::cin >> input_index;
-	if (std::cin.fail())
-	{
-		std::cin.clear();													// 오류 상태 초기화
-		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // 남아있는 버퍼 제거
-		std::cout << "Invalid input." << std::endl;
-		return 1;
-	}
-	getchar();
-	// std::cout << input_index << std::endl;
-	if (input_index < 0 || input_index >= this->index)
+	if (!std::getline(std::cin, input))
+		return 0;
+	if (input.empty())
 	{
 		std::cout << "Invalid index." << std::endl;
-		return 1;
+		goto SERACH;
+	}
+	if (isNumber(input) && !input.empty())
+	{
+		input_index = std::stoi(input);
+	}
+	else
+	{
+		std::cout << "Invalid index." << std::endl;
+		goto SERACH;
+	}
+	if (index < 8 && (input_index < 0 || input_index >= this->index))
+	{
+		std::cout << "Invalid index." << std::endl;
+		goto SERACH;
+	}
+	else if (index >= 8 && !(0 <= input_index && input_index <= 7))
+	{
+		std::cout << "Invalid index." << std::endl;
+		goto SERACH;
 	}
 
 	printSelectedContact(input_index);
@@ -165,17 +173,34 @@ void PhoneBook::printAllContacts(){
 		std::cout << "-";
 	}
 	std::cout << std::endl;
-	for (int i = 0; i < 8; i++)
-	{
-		std::cout << "|";
-		printLine(std::to_string(contacts[i].index));
-		std::cout << "|";
-		printLine(contacts[i].first_name);
-		std::cout << "|";
-		printLine(contacts[i].last_name);
-		std::cout << "|";
-		printLine(contacts[i].nickname);
-		std::cout << "|" << std::endl;
+	if (index > 8){
+
+		for (int i = 0; i < 8; i++)
+		{
+			std::cout << "|";
+			printLine(std::to_string(contacts[i].getIndex() % 8));
+			std::cout << "|";
+			printLine(contacts[i].getFirstName());
+			std::cout << "|";
+			printLine(contacts[i].getLastName());
+			std::cout << "|";
+			printLine(contacts[i].getNickname());
+			std::cout << "|" << std::endl;
+		}
+	}
+	else{
+		for (int i = 0; i < index; i++)
+		{
+			std::cout << "|";
+			printLine(std::to_string(contacts[i].getIndex() % 8));
+			std::cout << "|";
+			printLine(contacts[i].getFirstName());
+			std::cout << "|";
+			printLine(contacts[i].getLastName());
+			std::cout << "|";
+			printLine(contacts[i].getNickname());
+			std::cout << "|" << std::endl;
+		}
 	}
 
 	for (int i = 0; i < 45; i++)
@@ -186,9 +211,17 @@ void PhoneBook::printAllContacts(){
 }
 
 void PhoneBook::printSelectedContact(int index){
-	std::cout << "first name : " << contacts[index % 8].first_name << std::endl;
-	std::cout << "last name : " << contacts[index % 8].last_name << std::endl;
-	std::cout << "nickname : " << contacts[index % 8].nickname << std::endl;
-	std::cout << "phone number : " << contacts[index % 8].phonenumber << std::endl;
-	std::cout << "darkest secret : " << contacts[index % 8].darkest_secret << std::endl;
+	std::cout << "first name : " << contacts[index % 8].getFirstName() << std::endl;
+	std::cout << "last name : " << contacts[index % 8].getLastName() << std::endl;
+	std::cout << "nickname : " << contacts[index % 8].getNickname() << std::endl;
+	std::cout << "phone number : " << contacts[index % 8].getPhoneNumber() << std::endl;
+	std::cout << "darkest secret : " << contacts[index % 8].getDarkestSecret() << std::endl;
+}
+
+bool PhoneBook::isNumber(std::string str){
+	for (int i = 0; str[i]; i++){
+		if (!std::isdigit(str[i]))
+			return false;
+	}
+	return true;
 }

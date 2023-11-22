@@ -1,27 +1,20 @@
 #include <iostream>
 #include <string>
 #include <iomanip>
-
-class Contact{
-	public:
-		int index;
-		std::string first_name;
-		std::string last_name;
-		std::string nickname;
-		std::string phonenumber;
-		std::string darkest_secret;
-};
+#include "Contact.hpp"
 
 class PhoneBook {
-	public :
+	private :
 		int index;
 		Contact contacts[8];
-		void initContact();
-		void clearContact();
-		int addContact();
+		bool isNumber(std::string str);
 		void printIndexRange();
-		int searchContact();
 		void printLine(std::string str);
 		void printAllContacts();
 		void printSelectedContact(int index);
+	public :
+		void initContact();
+		void clearContact();
+		int addContact();
+		int searchContact();
 };

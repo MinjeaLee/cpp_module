@@ -1,4 +1,4 @@
-#include "phonebook.hpp"
+#include "PhoneBook.hpp"
 
 int main(){
 	std::string command;
@@ -19,6 +19,7 @@ int main(){
 			phonebook.searchContact();
 		}
 		else if (command == "EXIT"){
+			phonebook.clearContact();
 			break;
 		}
 		else{

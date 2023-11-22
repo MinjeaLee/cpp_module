@@ -13,7 +13,7 @@ int main(int argc, char **argv){
 	}
 	std::ifstream file(argv[1]);
 	if (!file.is_open()){
-		std::cout << "File not found" << std::endl;
+		std::cout << "File not found or can't open" << std::endl;
 		return (1);
 	}
 	std::string from = argv[2];
@@ -21,6 +21,10 @@ int main(int argc, char **argv){
 	std::string line;
 
 	std::ofstream new_file(std::string(argv[1]) + ".replace");
+	if (!new_file.is_open()){
+		std::cout << "Can't create new file" << std::endl;
+		return (1);
+	}
 	while (std::getline(file, line)){
 		std::string::size_type pos = 0;
 		while ((pos = line.find(from, pos)) != std::string::npos){
