@@ -16,6 +16,12 @@ int main(int argc, char **argv){
 		std::cout << "File not found or can't open" << std::endl;
 		return (1);
 	}
+	if (file.peek() == std::ifstream::traits_type::eof()){
+		std::cout << "Empty file" << std::endl;
+		file.close();
+		return (1);
+	}
+
 	std::string from = argv[2];
 	std::string to = argv[3];
 	std::string line;
