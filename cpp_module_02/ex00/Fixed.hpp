@@ -2,6 +2,9 @@
 
 class Fixed
 {
+private:
+	int _fixedPointValue;
+	static const int _fractionalBits = 8;
 public:
 	Fixed(void);
 	Fixed(Fixed const & src);
@@ -11,8 +14,4 @@ public:
 
 	int getRawBits(void) const;
 	void setRawBits(int const raw);
-
-private:
-	int _fixedPointValue;
-	static const int _fractionalBits = 8;
 };
