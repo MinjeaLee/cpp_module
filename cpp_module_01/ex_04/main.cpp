@@ -21,7 +21,6 @@ int main(int argc, char **argv){
 		file.close();
 		return (1);
 	}
-
 	std::string from = argv[2];
 	std::string to = argv[3];
 	std::string line;
